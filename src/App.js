@@ -4,12 +4,14 @@ import './App.css';
 
 class App extends Component {
   state = {
-    Users: [{ name: 'anubhav', gender: 'male', age: 23 }, { name: 'ankit', gender: 'male', age: 25 }],
-    searchUser: [],
-    inUser: '',
-    deleteUserState: '',
-    AddedUser:""
+    Users: [{ name: 'anubhav', gender: 'male', age: 23 }, { name: 'ankit', gender: 'male', age: 25 }],//state for the users to be added 
+    searchUser: [],//this property on state was created to maintain a search record for user
+    inUser: '', //this property on state was created to maintain a record for input text in input box
+    deleteUserState: '',//this property on state is there to key record for deleted user
+    AddedUser:""//this property on state is used to render the first name of added user
   }
+  //addUser -- This function is used to fetch the data from api. I have requested only limited data from api in inc fields for this
+  //        -- After fetching the data, the state is updated 
   addUser = () => {
     let arr = [...this.state.Users]
     const getdata = async () => {
@@ -18,19 +20,20 @@ class App extends Component {
       const { dob, gender, name } = data.results[0];
       arr.push({ name: name.first, gender: gender, age: dob.age })
       this.setState({AddedUser:data.results[0].name.first})
-      this.setState({ Users: arr })
+      this.setState({ Users: arr })//All the users are added here
     }
     getdata();
   }
+  //deleteUserIn func is defined to update the state for input field for input box for delete users
   deleteUserIn = (event) => {
     this.setState({ deleteUserState: event.target.value })
   }
+  //searchUserIn func is defined to update the state for input field for input box for user searched
   searchUserIn = (event) => {
     this.setState({ inUser: event.target.value })
   }
-
+  //this function filter out the desired user entered and returns an array excluding the user which had to be deleted
   deleteUser = () => {
-
     let arr = [...this.state.Users]
     // const name=prompt('Name');
     // console.log(this.state.deleteUser);
@@ -40,7 +43,7 @@ class App extends Component {
     if (narr.length < arr.length) this.setState({ Users: narr })
     else alert("User not found ")
   }
-
+//this function searches for the user from input box and shows the same in the results section by returning that user in the array
   searchUser = () => {
     let arr = [...this.state.Users]
     // const name=prompt('Name');
@@ -51,10 +54,13 @@ class App extends Component {
     if (narr.length) this.setState({ searchUser: narr })
     else (this.setState({ searchUser: nFound }))
   }
+  //render func to render the html element on screen
   render() {
+    // markup - this returns iteration on every element in array of users and joins them making a string with separated by a space(" ").
     let markup = this.state.Users.map((item) => {
       return item.name
     }).join(' ')
+    // sUser - this returns iteration on every element in array of users and joins the users with same name property separated by space. 
     let sUser = this.state.searchUser.map(item => {
       return item.name
     }).join(" ");
