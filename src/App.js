@@ -4,27 +4,38 @@ import User from './User/User';
 
 class App extends Component {
   state = {
-    Users: [{ name: 'anubhav', gender: 'male', age: 23 }, { name: 'ankit', gender: 'male', age: 25 }],//state for the users to be added 
+    Users: [],//state for the users to be added 
     searchUser: [],//this property on state was created to maintain a search record for user
     inUser: '', //this property on state was created to maintain a record for input text in input box
     deleteUserState: '',//this property on state is there to key record for deleted user
-    AddedUser:""//this property on state is used to render the first name of added user
+    searchResult: ""//this property on state is used to render the first name of added user
   }
   //addUser -- This function is used to fetch the data from api. I have requested only limited data from api in inc fields for this
   //        -- After fetching the data, the state is updated 
   addUser = () => {
     let arr = [...this.state.Users]
     const getdata = async () => {
-      const res = await fetch('https://randomuser.me/api/?inc=gender,name,dob&noinfo')
+      const res = await fetch('https://randomuser.me/api/?inc=gender,name,picture,location,dob&noinfo')
       const data = await res.json()
-      const { dob, gender, name } = data.results[0];
-      arr.push({ name: name.first, gender: gender, age: dob.age })
-      this.setState({AddedUser:data.results[0].name.first})
-      this.setState({ Users: arr })//All the users are added here
-      document.querySelector('.User-Update').insertAdjacentHTML('beforeend','{<User name={name.first} age={dob.age} gender={gender}/>}')
-    }
+      const { dob, gender, name, picture,location } = data.results[0];
+      arr.push({
+         fName: name.first,
+         lName: name.last,
+         gender: gender, 
+         age: dob.age ,
+         picture:picture.thumbnail, 
+         city:location.city,
+         State:location.state,
+         streetName:location.street.name,
+         streetNum:location.street.number,
+         delete:'No'
+        })
+
+      this.setState({ Users: arr })
+      }
     getdata();
   }
+
   //deleteUserIn func is defined to update the state for input field for input box for delete users
   deleteUserIn = (event) => {
     this.setState({ deleteUserState: event.target.value })
@@ -34,68 +45,89 @@ class App extends Component {
     this.setState({ inUser: event.target.value })
   }
   //this function filter out the desired user entered and returns an array excluding the user which had to be deleted
-  deleteUser = () => {
+  deleteUser = (event) => {
     let arr = [...this.state.Users]
-    // const name=prompt('Name');
-    // console.log(this.state.deleteUser);
+    let wee=event.target.parentNode.innerText.split(" ");
     const narr = arr.filter(item => {
-      return item.name !== this.state.deleteUserState;
+      return item.fName !== wee[0];
     })
     if (narr.length < arr.length) this.setState({ Users: narr })
     else alert("User not found ")
   }
-//this function searches for the user from input box and shows the same in the results section by returning that user in the array
+  //this function searches for the user from input box and shows the same in the results section by returning that user in the array
   searchUser = () => {
     let arr = [...this.state.Users]
-    // const name=prompt('Name');
     const narr = arr.filter(item => {
-      return item.name === this.state.inUser;
+      return item.fName === this.state.inUser;
     })
-    let nFound = [{ name: 'User not available' }]
-    if (narr.length) this.setState({ searchUser: narr })
-    else (this.setState({ searchUser: nFound }))
+    console.log(this.state.inUser)
+    if (narr.length) {this.setState({searchResult:"f" })
+    this.setState({ searchUser: narr })}
+    else this.setState({searchResult:null})
+    console.log(this.state.searchResult)
   }
   //render func to render the html element on screen
-  render() {
-    // markup - this returns iteration on every element in array of users and joins them making a string with separated by a space(" ").
-    let markup = this.state.Users.map((item) => {
-      return item.name
-    }).join(' ')
-    // sUser - this returns iteration on every element in array of users and joins the users with same name property separated by space. 
-    let sUser = this.state.searchUser.map(item => {
-      return item.name
-    }).join(" ");
+  render() { 
     return (
       <div className="App">
         <h1>User Management</h1>
         <div className="searchUser">
           <input type="text" placeholder="enter name of user to search" value={this.state.inUser} onChange={this.searchUserIn} onKeyUp={this.searchUser} />
-          {/* <button className="button-search" type="button" onClick={this.searchUser}>Search User</button> */}
         </div>
 
-          {/* <p>User added -- "{this.state.AddedUser}"</p> */}
+        <div className="user-search-box">
+          {this.state.searchUser && (Object.keys(this.state.searchUser).map((k) => {
+                let data = this.state.searchUser[k];
+                return (
+                  <div className="user-container">
+                      <div className="user-image">
+                        <img src={data.picture}/>
+                      </div>
+                      <div className="user-details">
+                      <div className="user-name">
+                      {data.fName} {data.lName}
+                      </div>                  
+                      <div className="user-address">  
+                      {data.streetNum}, {data.streetName}, {data.city}, {data.State}                  
+                      </div>
+                      </div>
+                      <button className="button-delete" type="button" onClick={this.deleteUser}>Delete</button>
+                      </div>
+            )}))
+          }</div>
+        <div className="User-Update">
+          <p>{
+            Object.keys(this.state.Users).map((k) => {
+            let data = this.state.Users[k];
+            return (
+              <div className="user-container">
+                  <div className="user-image">
+                    <img src={data.picture}/>
+                  </div>
+                  <div className="user-details">
+                  <div className="user-name">
+                  {data.fName} {data.lName}
+                  </div>                  
+                  <div className="user-address">  
+                  {data.streetNum}, {data.streetName}, {data.city}, {data.State}                  
+                  </div>
+                  </div>
+                  <button className="button-delete" type="button" onClick={this.deleteUser}>Delete</button>
+                  </div>
+            );
+           }
+           )
+           }
+           
+           <br /><br />
+          </p>
+        </div>
 
-          <div className="User-Update">
-            <User name={this.state.Users[0].name} age={this.state.Users[0].age} gender={this.state.Users[0].gender}/>
-            <p>
-        Current users are -- {markup}<br /><br />
-        The searched user is -- {sUser}<br /><br />
-        The deleted user is  -- {this.state.deleteUserState}
+        <div className="addUser">
 
-        </p>
-          </div>
-
-          <div className="addUser">
-
-         <button className="buttons" type="button" onClick={this.addUser}>+ Add New User</button>
+          <button className="buttons" type="button" onClick={this.addUser}>+ Add New User</button>
 
         </div>
-        {/* <div className="deleteUser">
-          <input type="text" placeholder="enter name of user to delete" value={this.state.deleteUserState} onChange={this.deleteUserIn} />
-          <button className="button-delete" type="button" onClick={this.deleteUser}>Delete User</button>
-        </div> */}
-        
-        
 
       </div>
     );
