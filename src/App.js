@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-// import User from './User/User';
+import User from './User/User';
 
 class App extends Component {
   state = {
@@ -21,6 +21,7 @@ class App extends Component {
       arr.push({ name: name.first, gender: gender, age: dob.age })
       this.setState({AddedUser:data.results[0].name.first})
       this.setState({ Users: arr })//All the users are added here
+      document.querySelector('.User-Update').insertAdjacentHTML('beforeend','{<User name={name.first} age={dob.age} gender={gender}/>}')
     }
     getdata();
   }
@@ -67,26 +68,34 @@ class App extends Component {
     return (
       <div className="App">
         <h1>User Management</h1>
-        <div className="addUser">
-          <p>User added -- "{this.state.AddedUser}"</p>
-
-         <button className="buttons" type="button" onClick={this.addUser}>Add user</button>
-
-        </div>
-        <div className="deleteUser">
-          <input type="text" placeholder="enter name of user to delete" value={this.state.deleteUserState} onChange={this.deleteUserIn} />
-          <button className="button-delete" type="button" onClick={this.deleteUser}>Delete User</button>
-        </div>
         <div className="searchUser">
-          <input type="text" placeholder="enter name of user to search" value={this.state.inUser} onChange={this.searchUserIn} />
-          <button className="button-search" type="button" onClick={this.searchUser}>Search User</button>
+          <input type="text" placeholder="enter name of user to search" value={this.state.inUser} onChange={this.searchUserIn} onKeyUp={this.searchUser} />
+          {/* <button className="button-search" type="button" onClick={this.searchUser}>Search User</button> */}
         </div>
-        <p>
+
+          {/* <p>User added -- "{this.state.AddedUser}"</p> */}
+
+          <div className="User-Update">
+            <User name={this.state.Users[0].name} age={this.state.Users[0].age} gender={this.state.Users[0].gender}/>
+            <p>
         Current users are -- {markup}<br /><br />
         The searched user is -- {sUser}<br /><br />
         The deleted user is  -- {this.state.deleteUserState}
 
         </p>
+          </div>
+
+          <div className="addUser">
+
+         <button className="buttons" type="button" onClick={this.addUser}>+ Add New User</button>
+
+        </div>
+        {/* <div className="deleteUser">
+          <input type="text" placeholder="enter name of user to delete" value={this.state.deleteUserState} onChange={this.deleteUserIn} />
+          <button className="button-delete" type="button" onClick={this.deleteUser}>Delete User</button>
+        </div> */}
+        
+        
 
       </div>
     );

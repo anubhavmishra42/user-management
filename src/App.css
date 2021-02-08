@@ -11,20 +11,29 @@ body{
   justify-content: center;
   flex-direction: column;
   position: relative;
-  height: 400px;
-  width: 600px;
+  height: 500px;
+  width: 700px;
   margin: auto;
-  background-color: rgb(104, 149, 216);
+  background-color: white;
   border: 1px solid black;
   padding:5%;
+  position: relative;
 }
-.addUser>p{
+.App>h1{
+position: absolute;
+top: 1%;
+left:30%;
+margin-top: 0;
+margin-bottom: 0;
+box-sizing: border-box;
+}
+/* .addUser>p{
   background-color: rgb(223, 218, 198);
   border: 1px solid black;
   height:20px;
   padding:2px;
   margin-top:5px;
-}
+} */
 
 .App>p{
   padding: 2%;
@@ -32,14 +41,14 @@ body{
   background-color: rgb(172, 185, 207);
 }
 .buttons{
-  width: 80px;
-  height: 30px;
   margin-top:5px ;
   margin-left: auto;
   display: inline-block;
+  background-color: black;
+  color:white;
 
 }
-.addUser{
+/* .addUser{
   padding:10px;
   height: 40px;
   width: 500px;
@@ -51,9 +60,9 @@ body{
   justify-content:center;
   text-align: right;
   background-color: cornsilk;
-}
+} */
 
-.deleteUser{
+/* .deleteUser{
   padding:10px;
   height: 40px;
   width: 500px;
@@ -69,11 +78,12 @@ body{
 .deleteUser>input{
   margin-right: 95px;
   width: 300px;
-}
+} */
 
 .searchUser>input{
   margin-right: 95px;
-  width: 300px;
+  border-radius: 30px;
+  outline: none;
 }
 .searchUser{
   padding:10px;
@@ -82,11 +92,12 @@ body{
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
-  border: 2px solid black;
   display: flex;
   justify-content:center;
   text-align: right;
-  background-color: cornsilk;
+  position: absolute;
+  top:10%;
+  left:20%;
 }
 .button-search{
 
